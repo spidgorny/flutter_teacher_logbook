@@ -1,13 +1,9 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 import 'fruit.dart';
 
-@immutable
 abstract class FruitEvent extends Equatable {
-  FruitEvent() : super() {
-//    print('FruitEvent');
-  }
+  const FruitEvent();
 
   @override
   List<Object> get props => [];
@@ -15,18 +11,12 @@ abstract class FruitEvent extends Equatable {
 
 class LoadFruits extends FruitEvent {}
 
-class AddRandomFruit extends FruitEvent {
-  AddRandomFruit() : super() {
-    print('AddRandomFruit');
-  }
-}
+class AddRandomFruit extends FruitEvent {}
 
 class UpdateWithRandomFruit extends FruitEvent {
   final Fruit updatedFruit;
 
-  UpdateWithRandomFruit(this.updatedFruit) : super() {
-    print('UpdateWithRandomFruit');
-  }
+  const UpdateWithRandomFruit(this.updatedFruit);
 
   @override
   List<Object> get props => [updatedFruit];
@@ -35,9 +25,7 @@ class UpdateWithRandomFruit extends FruitEvent {
 class DeleteFruit extends FruitEvent {
   final Fruit fruit;
 
-  DeleteFruit(this.fruit) : super() {
-    print('DeleteFruit');
-  }
+  const DeleteFruit(this.fruit);
 
   @override
   List<Object> get props => [fruit];

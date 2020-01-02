@@ -31,8 +31,6 @@ class FruitBloc extends Bloc<FruitEvent, FruitState> {
       yield* _reloadFruits();
     } else if (event is UpdateWithRandomFruit) {
       final newFruit = RandomFruitGenerator.getRandomFruit();
-      // Keeping the ID of the Fruit the same
-      newFruit.id = event.updatedFruit.id;
       await _fruitDao.update(newFruit);
       yield* _reloadFruits();
     } else if (event is DeleteFruit) {
@@ -50,16 +48,21 @@ class FruitBloc extends Bloc<FruitEvent, FruitState> {
 }
 
 class RandomFruitGenerator {
-  static final _fruits = [
-    Fruit(name: 'Banana', isSweet: true),
-    Fruit(name: 'Strawberry', isSweet: true),
-    Fruit(name: 'Kiwi', isSweet: false),
-    Fruit(name: 'Apple', isSweet: true),
-    Fruit(name: 'Pear', isSweet: true),
-    Fruit(name: 'Lemon', isSweet: false),
+  static final _names = [
+    'Banana',
+    'Strawberry',
+    'Kiwi',
+    'Apple',
+    'Pear',
+    'Lemon',
   ];
 
   static Fruit getRandomFruit() {
-    return _fruits[Random().nextInt(_fruits.length)];
+    final name = _names[Random().nextInt(5)];
+    return Fruit(
+      id: Random().nextInt(1000),
+      name: name,
+      isSweet: Random().nextBool(),
+    );
   }
 }

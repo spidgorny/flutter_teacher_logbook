@@ -49,10 +49,7 @@ class FruitDao {
 
     // Making a List<Fruit> out of List<RecordSnapshot>
     return recordSnapshots.map((snapshot) {
-      final fruit = Fruit.fromMap(snapshot.value);
-      // An ID is a key of a record from the database.
-      fruit.id = snapshot.key;
-      return fruit;
+      return Fruit.fromMap(snapshot.key, snapshot.value);
     }).toList();
   }
 }

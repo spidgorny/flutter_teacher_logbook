@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'fruit_bloc.dart';
+import 'fruit_event.dart';
 import 'home_page.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
@@ -56,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => FruitBloc(),
+      create: (BuildContext context) => FruitBloc()..add(LoadFruits()),
       child: MaterialApp(
         title: 'Teacher Logbook',
         theme: ThemeData(
