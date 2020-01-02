@@ -29,7 +29,7 @@ class UpdateWithRandomFruit extends FruitEvent {
   }
 
   @override
-  List<Object> get props => ['updatedFruit'];
+  List<Object> get props => [updatedFruit];
 }
 
 class DeleteFruit extends FruitEvent {
@@ -40,5 +40,5 @@ class DeleteFruit extends FruitEvent {
   }
 
   @override
-  List<Object> get props => ['fruit'];
+  List<Object> get props => [fruit];
 }

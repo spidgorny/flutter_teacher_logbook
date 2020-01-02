@@ -26,4 +26,8 @@ class Fruit {
       isSweet: map['isSweet'],
     );
   }
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [id, name, isSweet];
 }

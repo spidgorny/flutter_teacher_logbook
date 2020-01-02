@@ -19,5 +19,5 @@ class FruitsLoaded extends FruitState {
   }
 
   @override
-  List<Object> get props => ['fruits'];
+  List<Object> get props => [fruits];
 }
