@@ -2,13 +2,20 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 
+import '../class/class.dart';
 import 'pupil.dart';
 import 'pupil_dao.dart';
 import 'pupil_event.dart';
 import 'pupil_state.dart';
 
 class PupilBloc extends Bloc<PupilEvent, PupilState> {
-  PupilDao _classDao = PupilDao();
+  final Class klass;
+
+  PupilDao _classDao;
+
+  PupilBloc(this.klass) {
+    _classDao = PupilDao(this.klass);
+  }
 
   // Display a loading indicator right from the start of the app
   @override
@@ -24,7 +31,8 @@ class PupilBloc extends Bloc<PupilEvent, PupilState> {
       yield PupilLoading();
       yield* _reloadPupil();
     } else if (event is AddPupil) {
-      await _classDao.insert(new Pupil(id: event.id, name: event.name));
+      await _classDao
+          .insert(new Pupil(id: event.id, name: event.name, klass: klass.id));
       yield* _reloadPupil();
     } else if (event is UpdatePupil) {
       int result = await _classDao.update(event.me);

@@ -6,16 +6,19 @@ class Pupil extends Equatable {
   // It's automatically generated & unique for every stored Fruit.
   final String id;
   final String name;
+  final String klass;
 
   Pupil({
     @required this.id,
     @required this.name,
+    @required this.klass,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
+      'class': klass,
     };
   }
 
@@ -23,6 +26,7 @@ class Pupil extends Equatable {
   Map<String, dynamic> toMapData() {
     return {
       'name': name,
+      'class': klass,
     };
   }
 
@@ -34,11 +38,12 @@ class Pupil extends Equatable {
     var instance = Pupil(
       id: id,
       name: map['name'],
+      klass: map['class'],
     );
     print('[Pupil.fromMap] ${instance.toString()}');
     return instance;
   }
 
   @override
-  List<Object> get props => [id, name];
+  List<Object> get props => [id, name, klass];
 }

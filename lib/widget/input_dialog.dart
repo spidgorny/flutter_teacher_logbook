@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class InputDialog {
   final BuildContext context;
+  final String title;
+  final String label;
+  final String hint;
 
-  InputDialog(this.context);
+  InputDialog(this.context,
+      {this.title = 'New Class', this.label = 'Name', this.hint = '8A'});
 
   Future<String> asyncInputDialog() async {
     String teamName = '';
@@ -13,14 +17,14 @@ class InputDialog {
           false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('New Class'),
+          title: Text(title),
           content: new Row(
             children: <Widget>[
               new Expanded(
                   child: new TextField(
                 autofocus: true,
                 decoration:
-                    new InputDecoration(labelText: 'Name', hintText: '8A'),
+                    new InputDecoration(labelText: label, hintText: hint),
                 onChanged: (value) {
                   teamName = value;
                 },

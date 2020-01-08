@@ -1,14 +1,19 @@
 import 'package:sembast/sembast.dart';
 
 import '../app_database.dart';
+import '../class/class.dart';
 import 'pupil.dart';
 
 class PupilDao {
   static const String STORE_NAME = 'pupil';
 
+  final Class klass;
+
   // A Store with int keys and Map<String, dynamic> values.
   // This Store acts like a persistent map, values of which are Fruit objects converted to Map
   final _pupilStore = intMapStoreFactory.store(STORE_NAME);
+
+  PupilDao(this.klass);
 
   // Private getter to shorten the amount of code needed to get the
   // singleton instance of an opened database.
@@ -43,7 +48,7 @@ class PupilDao {
 
   Future<List<Pupil>> getAllSortedByName() async {
     // Finder object can also sort data.
-    final finder = Finder(sortOrders: [
+    final finder = Finder(filter: Filter.equals('class', klass), sortOrders: [
       SortOrder('name'),
     ]);
 

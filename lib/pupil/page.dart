@@ -16,47 +16,54 @@ class PupilPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MyAppBar(title: klass.name),
-      body: BlocListener<PupilBloc, PupilState>(
-        listener: (context, state) {
-          print('[listener] $state');
-        },
-        child: BlocBuilder<PupilBloc, PupilState>(
-          builder: (BuildContext context, PupilState state) {
-            if (state is PupilLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state is PupilLoaded) {
-              return ListView.builder(
-                itemCount: state.pupils.length,
-                itemBuilder: (context, index) {
-                  final displayedPupil = state.pupils[index];
-                  return ListTile(
-                    title: Text(displayedPupil.name ??
-                        '' + ' [' + displayedPupil.id + ']'),
-                    trailing: PupilButtons(displayedPupil: displayedPupil),
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<PupilBloc>(
+              create: (BuildContext context) =>
+                  PupilBloc(klass)..add(LoadPupil())),
+        ],
+        child: Scaffold(
+          appBar: MyAppBar(title: klass.name),
+          body: BlocListener<PupilBloc, PupilState>(
+            listener: (context, state) {
+              print('[listener] $state');
+            },
+            child: BlocBuilder<PupilBloc, PupilState>(
+              builder: (BuildContext context, PupilState state) {
+                if (state is PupilLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
-                },
-              );
-            } else {
-              return Center(child: Text(state.toString()));
-            }
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () async {
-          final InputDialog dialog = new InputDialog(context);
-          final String name = await dialog.asyncInputDialog();
-          if (name != null && name.isNotEmpty) {
-            BlocProvider.of<PupilBloc>(context).add(AddPupil(name));
-          }
-        },
-      ),
-    );
+                } else if (state is PupilLoaded) {
+                  return ListView.builder(
+                    itemCount: state.pupils.length,
+                    itemBuilder: (context, index) {
+                      final displayedPupil = state.pupils[index];
+                      return ListTile(
+                        title: Text(displayedPupil.name ??
+                            '' + ' [' + displayedPupil.id + ']'),
+                        trailing: PupilButtons(displayedPupil: displayedPupil),
+                      );
+                    },
+                  );
+                } else {
+                  return Center(child: Text(state.toString()));
+                }
+              },
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () async {
+              final InputDialog dialog = new InputDialog(context,
+                  title: 'New Pupil', hint: 'Max Musterman');
+              final String name = await dialog.asyncInputDialog();
+              if (name != null && name.isNotEmpty) {
+                BlocProvider.of<PupilBloc>(context).add(AddPupil(name));
+              }
+            },
+          ),
+        ));
   }
 }
 
