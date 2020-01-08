@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import '../global.dart';
 
 class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
+  final String title;
+
+  const MyAppBar({Key key, this.title}) : super(key: key);
+
   @override
   _MyAppBarState createState() => _MyAppBarState();
 
@@ -15,7 +19,7 @@ class _MyAppBarState extends State<MyAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text('Teacher Logbook'),
+      title: Text(widget.title ?? 'Teacher Logbook'),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.category),

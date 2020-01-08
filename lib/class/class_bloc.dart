@@ -27,7 +27,7 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
       await _classDao.insert(new Class(id: event.id, name: event.name));
       yield* _reloadClass();
     } else if (event is UpdateClass) {
-      int result = await _classDao.update(event.newClass);
+      int result = await _classDao.update(event.me);
       print('[Class.mapEventToState] update result: $result');
       yield* _reloadClass();
     } else if (event is DeleteClass) {

@@ -7,8 +7,10 @@ import 'class/class_event.dart';
 import 'class/page.dart';
 import 'fruit/fruit_bloc.dart';
 import 'fruit/fruit_event.dart';
+import 'fruit/home_page.dart';
 import 'global.dart';
-import 'home_page.dart';
+import 'pupil/pupil_bloc.dart';
+import 'pupil/pupil_event.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
   @override
@@ -88,6 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
             create: (BuildContext context) => FruitBloc()..add(LoadFruits())),
         BlocProvider<ClassBloc>(
             create: (BuildContext context) => ClassBloc()..add(LoadClass())),
+        BlocProvider<PupilBloc>(
+            create: (BuildContext context) => PupilBloc()..add(LoadPupil())),
       ],
       child: MaterialApp(
         title: 'Teacher Logbook',

@@ -19,12 +19,12 @@ class AddClass extends ClassEvent {
 }
 
 class UpdateClass extends ClassEvent {
-  final Class newClass;
+  final Class me;
 
-  const UpdateClass(this.newClass);
+  const UpdateClass(this.me);
 
   @override
-  List<Object> get props => [newClass];
+  List<Object> get props => [me];
 }
 
 class DeleteClass extends ClassEvent {

@@ -1,45 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../pupil/page.dart';
+import '../class/class.dart';
 import '../widget/appbar.dart';
 import '../widget/input_dialog.dart';
-import 'class.dart';
-import 'class_bloc.dart';
-import 'class_event.dart';
-import 'class_state.dart';
+import 'pupil.dart';
+import 'pupil_bloc.dart';
+import 'pupil_event.dart';
+import 'pupil_state.dart';
 
-class ClassPage extends StatelessWidget {
+class PupilPage extends StatelessWidget {
+  final Class klass;
+
+  const PupilPage(this.klass, {Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(),
-      body: BlocListener<ClassBloc, ClassState>(
+      appBar: MyAppBar(title: klass.name),
+      body: BlocListener<PupilBloc, PupilState>(
         listener: (context, state) {
           print('[listener] $state');
         },
-        child: BlocBuilder<ClassBloc, ClassState>(
-          builder: (BuildContext context, ClassState state) {
-            if (state is ClassLoading) {
+        child: BlocBuilder<PupilBloc, PupilState>(
+          builder: (BuildContext context, PupilState state) {
+            if (state is PupilLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (state is ClassLoaded) {
+            } else if (state is PupilLoaded) {
               return ListView.builder(
-                itemCount: state.classes.length,
+                itemCount: state.pupils.length,
                 itemBuilder: (context, index) {
-                  final Class displayedClass = state.classes[index];
+                  final displayedPupil = state.pupils[index];
                   return ListTile(
-                    title: Text(displayedClass.name ??
-                        '' + ' [' + displayedClass.id + ']'),
-                    trailing: ClassButtons(displayedClass: displayedClass),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PupilPage(displayedClass)),
-                      );
-                    },
+                    title: Text(displayedPupil.name ??
+                        '' + ' [' + displayedPupil.id + ']'),
+                    trailing: PupilButtons(displayedPupil: displayedPupil),
                   );
                 },
               );
@@ -55,7 +52,7 @@ class ClassPage extends StatelessWidget {
           final InputDialog dialog = new InputDialog(context);
           final String name = await dialog.asyncInputDialog();
           if (name != null && name.isNotEmpty) {
-            BlocProvider.of<ClassBloc>(context).add(AddClass(name));
+            BlocProvider.of<PupilBloc>(context).add(AddPupil(name));
           }
         },
       ),
@@ -63,12 +60,12 @@ class ClassPage extends StatelessWidget {
   }
 }
 
-class ClassButtons extends StatelessWidget {
-  final Class displayedClass;
+class PupilButtons extends StatelessWidget {
+  final Pupil displayedPupil;
 
   final bool dangerous = false;
 
-  const ClassButtons({Key key, @required this.displayedClass})
+  const PupilButtons({Key key, @required this.displayedPupil})
       : super(key: key);
 
   @override
@@ -79,16 +76,16 @@ class ClassButtons extends StatelessWidget {
 //        IconButton(
 //          icon: Icon(Icons.refresh),
 //          onPressed: () {
-//            BlocProvider.of<ClassBloc>(context)
-//                .add(UpdateClass(displayedFruit));
+//            BlocProvider.of<PupilBloc>(context)
+//                .add(UpdatePupil(displayedFruit));
 //          },
 //        ),
         IconButton(
           icon: Icon(Icons.delete_outline),
           onPressed: dangerous
               ? () {
-                  BlocProvider.of<ClassBloc>(context)
-                      .add(DeleteClass(displayedClass));
+                  BlocProvider.of<PupilBloc>(context)
+                      .add(DeletePupil(displayedPupil));
                 }
               : null,
         ),
