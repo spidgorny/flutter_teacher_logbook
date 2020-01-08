@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'fruit.dart';
-import 'fruit_bloc.dart';
-import 'fruit_event.dart';
-import 'fruit_state.dart';
+import 'fruit/fruit.dart';
+import 'fruit/fruit_bloc.dart';
+import 'fruit/fruit_event.dart';
+import 'fruit/fruit_state.dart';
 
 class HomePage extends StatelessWidget {
   @override

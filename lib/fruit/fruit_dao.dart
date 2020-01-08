@@ -1,6 +1,6 @@
 import 'package:sembast/sembast.dart';
 
-import 'app_database.dart';
+import '../app_database.dart';
 import 'fruit.dart';
 
 class FruitDao {

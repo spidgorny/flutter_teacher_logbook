@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'fruit_bloc.dart';
-import 'fruit_event.dart';
+import 'fruit/fruit_bloc.dart';
+import 'fruit/fruit_event.dart';
 import 'home_page.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
