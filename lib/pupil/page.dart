@@ -21,19 +21,33 @@ class PupilPage extends StatelessWidget {
         child: Scaffold(
           appBar: MyAppBar(title: klass.name),
           body: PupilList(),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () async {
-              final InputDialog dialog = new InputDialog(context,
-                  title: 'New Pupil', hint: 'Max Musterman');
-              final String name = await dialog.asyncInputDialog();
-              if (name != null && name.isNotEmpty) {
-                BlocProvider.of<PupilBloc>(context)
-                    .add(AddPupil(name, int.parse(klass.id)));
-              }
-            },
-          ),
+          floatingActionButton: PupilFAB(klass: klass),
         ));
+  }
+}
+
+class PupilFAB extends StatelessWidget {
+  const PupilFAB({
+    Key key,
+    @required this.klass,
+  }) : super(key: key);
+
+  final Class klass;
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      child: Icon(Icons.add),
+      onPressed: () async {
+        final InputDialog dialog =
+            new InputDialog(context, title: 'New Pupil', hint: 'Max Musterman');
+        final String name = await dialog.asyncInputDialog();
+        if (name != null && name.isNotEmpty) {
+          BlocProvider.of<PupilBloc>(context)
+              .add(AddPupil(name, int.parse(klass.id)));
+        }
+      },
+    );
   }
 }
 

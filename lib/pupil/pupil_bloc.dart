@@ -14,6 +14,7 @@ class PupilBloc extends Bloc<PupilEvent, PupilState> {
   PupilDao _classDao;
 
   PupilBloc(this.klass) {
+    print('[PupilBloc] ${this.klass}');
     _classDao = PupilDao(this.klass);
   }
 

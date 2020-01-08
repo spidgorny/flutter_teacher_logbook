@@ -48,9 +48,11 @@ class PupilDao {
 
   Future<List<Pupil>> getAllSortedByName() async {
     // Finder object can also sort data.
-    final finder = Finder(filter: Filter.equals('class', klass), sortOrders: [
+    final finder =
+        Finder(filter: Filter.equals('class', klass.id), sortOrders: [
       SortOrder('name'),
     ]);
+    print('[PupilDao.getAll] $finder');
 
     final recordSnapshots = await _pupilStore.find(
       await _db,
