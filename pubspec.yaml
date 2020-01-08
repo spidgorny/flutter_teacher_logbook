@@ -28,6 +28,10 @@ dependencies:
   equatable: ^1.0.1
   flutter_bloc: ^2.0.0
   bloc: ^2.0.0
+  base_bloc:
+    git:
+      url: https://github.com/trgcuong/base_bloc.git
+      ref: 0.0.2
 
 dev_dependencies:
   flutter_test:

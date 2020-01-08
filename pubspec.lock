@@ -22,6 +22,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
+  base_bloc:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "0.0.2"
+      resolved-ref: "914ea6443ea4b4d2ccd574a1320ba9f40e8c99e5"
+      url: "https://github.com/trgcuong/base_bloc.git"
+    source: git
+    version: "0.0.2"
   bloc:
     dependency: "direct main"
     description:
