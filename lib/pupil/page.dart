@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_teacher_logbook/day/page.dart';
 
 import '../class/class.dart';
 import '../widget/appbar.dart';
@@ -77,6 +78,13 @@ class PupilList extends StatelessWidget {
                   title: Text(displayedPupil.name ??
                       '' + ' [' + displayedPupil.id.toString() + ']'),
                   trailing: PupilButtons(displayedPupil: displayedPupil),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DayPage(displayedPupil)),
+                    );
+                  },
                 );
               },
             );

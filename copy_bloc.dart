@@ -1,10 +1,10 @@
 import 'dart:io';
 
 main() async {
-  var path = 'lib/pupil/'; // ends with /
-  var sourceFilePrefix = 'class';
-  var destinationFilePrefix = 'pupil';
-  var newClass = 'Pupil';
+  var path = 'lib/day/'; // ends with /
+  var sourceFilePrefix = 'class'; // constant
+  var destinationFilePrefix = 'day';
+  var newClass = 'Day';
 
   // List all files in the current directory in UNIX-like systems.
   ProcessResult results = await Process.run('ls', [path]);
@@ -16,7 +16,7 @@ main() async {
     var destination =
         source.replaceAll(sourceFilePrefix, destinationFilePrefix);
     print('$source => $destination');
-//    results = await Process.run('git', ['mv', source, destination]);
+    results = await Process.run('git', ['mv', source, destination]);
   }
 
   replacePupil(new File(path + destinationFilePrefix + '.dart'), newClass);
