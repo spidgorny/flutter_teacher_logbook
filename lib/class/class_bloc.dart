@@ -24,8 +24,6 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
       yield ClassLoading();
       yield* _reloadClass();
     } else if (event is AddClass) {
-      // Loading indicator shouldn't be displayed while adding/updating/deleting
-      // a single Fruit from the database - we aren't yielding FruitsLoading().
       await _classDao.insert(new Class(id: event.id, name: event.name));
       yield* _reloadClass();
     } else if (event is UpdateClass) {

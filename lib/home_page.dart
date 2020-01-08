@@ -5,14 +5,18 @@ import 'fruit/fruit.dart';
 import 'fruit/fruit_bloc.dart';
 import 'fruit/fruit_event.dart';
 import 'fruit/fruit_state.dart';
+import 'widget/appbar.dart';
 
-class HomePage extends StatelessWidget {
+class FruitHomePage extends StatefulWidget {
+  @override
+  _FruitHomePageState createState() => _FruitHomePageState();
+}
+
+class _FruitHomePageState extends State<FruitHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Teacher Logbook'),
-      ),
+      appBar: MyAppBar(),
       body: BlocListener<FruitBloc, FruitState>(
         listener: (context, state) {
           print('[listener] $state');

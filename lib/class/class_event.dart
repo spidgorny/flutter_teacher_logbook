@@ -15,7 +15,7 @@ class AddClass extends ClassEvent {
   final String id;
   final String name;
 
-  AddClass(this.id, this.name);
+  AddClass(this.name, {this.id});
 }
 
 class UpdateClass extends ClassEvent {

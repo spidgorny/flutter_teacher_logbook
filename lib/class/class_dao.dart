@@ -28,8 +28,10 @@ class ClassDao {
     );
   }
 
-  Future delete(Class fruit) async {
-    final finder = Finder(filter: Filter.byKey(fruit.id));
+  Future delete(Class me) async {
+    print('[dao] delete $me');
+    final finder = Finder(filter: Filter.byKey(me.id));
+    print('[finder] $finder');
     await _classStore.delete(
       await _db,
       finder: finder,
