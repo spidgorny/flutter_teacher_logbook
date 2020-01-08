@@ -19,11 +19,24 @@ class Class extends Equatable {
     };
   }
 
+  /// without ID
+  Map<String, dynamic> toMapData() {
+    return {
+      'name': name,
+    };
+  }
+
+  String toString() {
+    return 'Class(${this.toMap().toString()})';
+  }
+
   static Class fromMap(String id, Map<String, dynamic> map) {
-    return Class(
+    var instance = Class(
       id: id,
       name: map['name'],
     );
+    print('[Class.fromMap] ${instance.toString()}');
+    return instance;
   }
 
   @override

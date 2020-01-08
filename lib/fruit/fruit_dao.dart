@@ -30,10 +30,11 @@ class FruitDao {
 
   Future delete(Fruit fruit) async {
     final finder = Finder(filter: Filter.byKey(fruit.id));
-    await _fruitStore.delete(
+    int result = await _fruitStore.delete(
       await _db,
       finder: finder,
     );
+    print('[FruitDao.delete] $result');
   }
 
   Future<List<Fruit>> getAllSortedByName() async {
@@ -48,7 +49,7 @@ class FruitDao {
     );
 
     // Making a List<Fruit> out of List<RecordSnapshot>
-    return recordSnapshots.map((snapshot) {
+    return recordSnapshots.map((RecordSnapshot snapshot) {
       return Fruit.fromMap(snapshot.key, snapshot.value);
     }).toList();
   }
