@@ -38,7 +38,7 @@ class PupilDao {
 
   Future delete(Pupil me) async {
     print('[dao] delete $me');
-    final finder = Finder(filter: Filter.byKey(int.parse(me.id)));
+    final finder = Finder(filter: Filter.byKey(me.id));
     print('[finder] $finder');
     return await _pupilStore.delete(
       await _db,
@@ -60,7 +60,7 @@ class PupilDao {
     // Making a List<Fruit> out of List<RecordSnapshot>
     return recordSnapshots.map((RecordSnapshot snapshot) {
       print('[snapshot] $snapshot');
-      return Pupil.fromMap(snapshot.key.toString(), snapshot.value);
+      return Pupil.fromMap(snapshot.key, snapshot.value);
     }).toList();
   }
 }

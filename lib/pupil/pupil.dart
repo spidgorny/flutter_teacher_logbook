@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 class Pupil extends Equatable {
   // Id will be gotten from the database.
   // It's automatically generated & unique for every stored Fruit.
-  final String id;
+  final int id;
   final String name;
   final String klass;
 
@@ -34,7 +34,7 @@ class Pupil extends Equatable {
     return 'Pupil(${this.toMap().toString()})';
   }
 
-  static Pupil fromMap(String id, Map<String, dynamic> map) {
+  static Pupil fromMap(int id, Map<String, dynamic> map) {
     var instance = Pupil(
       id: id,
       name: map['name'],
