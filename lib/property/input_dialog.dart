@@ -22,6 +22,7 @@ class PropertyInputDialog {
           false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
+          contentPadding: EdgeInsets.all(16),
           title: Text(title),
           content: PickerForm(
               label: label,
@@ -78,8 +79,8 @@ class _PickerFormState extends State<PickerForm> {
             });
           },
         )),
-        IconButton(
-          icon: Icon(this._icon),
+        FlatButton(
+          child: Icon(this._icon),
           onPressed: _pickIcon,
         )
       ],

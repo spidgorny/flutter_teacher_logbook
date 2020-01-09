@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_iconpicker/Serialization/iconDataSerialization.dart';
 
 import 'input_dialog.dart';
 import 'property.dart';
@@ -65,7 +68,19 @@ class PropertyList extends StatelessWidget {
             itemCount: state.properties.length,
             itemBuilder: (context, index) {
               final Property displayedProperty = state.properties[index];
+
+              IconData icon = IconData(0xe3af, fontFamily: 'MaterialIcons');
+
+              print('[displayedProperty]: ${displayedProperty.icon}');
+              if (displayedProperty.icon != null) {
+                var iconMap = jsonDecode(displayedProperty.icon);
+                print('[iconMap] $iconMap');
+                if (iconMap) {
+                  icon = mapToIconData(iconMap);
+                }
+              }
               return ListTile(
+                leading: Icon(icon),
                 title: Text(displayedProperty.name ??
                     '' + ' [' + displayedProperty.id.toString() + ']'),
                 trailing: PropertyButtons(displayedProperty: displayedProperty),
