@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_teacher_logbook/common/date.dart';
 import 'package:flutter_teacher_logbook/day/page.dart';
 
 import '../class/class.dart';
-import '../widget/appbar.dart';
 import '../widget/input_dialog.dart';
 import 'pupil.dart';
 import 'pupil_bloc.dart';
@@ -20,7 +20,7 @@ class PupilPage extends StatelessWidget {
     return BlocProvider(
         create: (BuildContext context) => PupilBloc(klass)..add(LoadPupil()),
         child: Scaffold(
-          appBar: MyAppBar(title: klass.name),
+          appBar: AppBar(title: Text(klass.name)),
           body: PupilList(),
           floatingActionButton: PupilFAB(klass: klass),
         ));
@@ -82,7 +82,8 @@ class PupilList extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => DayPage(displayedPupil)),
+                          builder: (context) =>
+                              DayPage(displayedPupil, Date.today())),
                     );
                   },
                 );

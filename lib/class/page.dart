@@ -14,52 +14,71 @@ class ClassPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(),
-      body: BlocListener<ClassBloc, ClassState>(
-        listener: (context, state) {
-          print('[listener] $state');
-        },
-        child: BlocBuilder<ClassBloc, ClassState>(
-          builder: (BuildContext context, ClassState state) {
-            if (state is ClassLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state is ClassLoaded) {
-              return ListView.builder(
-                itemCount: state.classes.length,
-                itemBuilder: (context, index) {
-                  final Class displayedClass = state.classes[index];
-                  return ListTile(
-                    title: Text(displayedClass.name ??
-                        '' + ' [' + displayedClass.id + ']'),
-                    trailing: ClassButtons(displayedClass: displayedClass),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PupilPage(displayedClass)),
-                      );
-                    },
+      body: ClassList(),
+      floatingActionButton: ClassFAB(),
+    );
+  }
+}
+
+class ClassFAB extends StatelessWidget {
+  const ClassFAB({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      child: Icon(Icons.add),
+      onPressed: () async {
+        final InputDialog dialog = new InputDialog(context);
+        final String name = await dialog.asyncInputDialog();
+        if (name != null && name.isNotEmpty) {
+          BlocProvider.of<ClassBloc>(context).add(AddClass(name));
+        }
+      },
+    );
+  }
+}
+
+class ClassList extends StatelessWidget {
+  const ClassList({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<ClassBloc, ClassState>(listener: (context, state) {
+      print('[listener] $state');
+    }, child: BlocBuilder<ClassBloc, ClassState>(
+      builder: (BuildContext context, ClassState state) {
+        if (state is ClassLoading) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is ClassLoaded) {
+          return ListView.builder(
+            itemCount: state.classes.length,
+            itemBuilder: (context, index) {
+              final Class displayedClass = state.classes[index];
+              return ListTile(
+                title: Text(
+                    displayedClass.name ?? '' + ' [' + displayedClass.id + ']'),
+                trailing: ClassButtons(displayedClass: displayedClass),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PupilPage(displayedClass)),
                   );
                 },
               );
-            } else {
-              return Center(child: Text(state.toString()));
-            }
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () async {
-          final InputDialog dialog = new InputDialog(context);
-          final String name = await dialog.asyncInputDialog();
-          if (name != null && name.isNotEmpty) {
-            BlocProvider.of<ClassBloc>(context).add(AddClass(name));
-          }
-        },
-      ),
-    );
+            },
+          );
+        } else {
+          return Center(child: Text(state.toString()));
+        }
+      },
+    ));
   }
 }
 

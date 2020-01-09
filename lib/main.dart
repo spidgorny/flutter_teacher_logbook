@@ -82,6 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final Brightness brightnessValue =
+        MediaQuery.of(context).platformBrightness;
+    bool isDark = brightnessValue == Brightness.dark;
+    print('Theme: ' + (isDark ? 'dark' : 'light'));
     return MultiBlocProvider(
       providers: [
         BlocProvider<FruitBloc>(
@@ -95,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
           primarySwatch: Colors.yellow,
           accentColor: Colors.redAccent,
         ),
+        darkTheme: ThemeData.dark(),
         home: currentPage == MyHomePage.PAGE_CLASS
             ? ClassPage()
             : FruitHomePage(),

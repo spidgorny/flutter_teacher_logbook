@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_teacher_logbook/common/date.dart';
 import 'package:flutter_teacher_logbook/pupil/pupil.dart';
 
-import '../widget/appbar.dart';
 import '../widget/input_dialog.dart';
 import 'day.dart';
 import 'day_bloc.dart';
@@ -11,15 +11,23 @@ import 'day_state.dart';
 
 class DayPage extends StatelessWidget {
   final Pupil pupil;
+  final Date date;
 
-  const DayPage(this.pupil, {Key key}) : super(key: key);
+  const DayPage(this.pupil, this.date, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (BuildContext context) => DayBloc(pupil)..add(LoadDay()),
         child: Scaffold(
-          appBar: MyAppBar(title: DateTime.now().toString().substring(0, 10)),
+          appBar: AppBar(title: Text(pupil.name), actions: [
+            IconButton(
+              icon: Icon(Icons.calendar_today),
+              onPressed: () {
+                print('new date');
+              },
+            )
+          ]),
           body: DayList(),
           floatingActionButton: DayFAB(),
         ));
