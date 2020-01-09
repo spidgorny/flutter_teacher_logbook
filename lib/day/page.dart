@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_teacher_logbook/common/date.dart';
-import 'package:flutter_teacher_logbook/property/page.dart';
 
+import '../common/date.dart';
+import '../property/page.dart';
 import '../property/property.dart';
 import '../property/property_bloc.dart';
 import '../property/property_event.dart';
@@ -67,7 +67,7 @@ class _DayPageState extends State<DayPage> {
                   },
                 )
               ]),
-          body: DayList(),
+          body: DayList(day: day),
           floatingActionButton: DayFAB(widget.pupil, day),
         ));
   }
@@ -123,8 +123,11 @@ class DayFAB extends StatelessWidget {
 }
 
 class DayList extends StatelessWidget {
+  final Date day;
+
   const DayList({
     Key key,
+    this.day,
   }) : super(key: key);
 
   @override
@@ -141,9 +144,9 @@ class DayList extends StatelessWidget {
             );
           } else if (state is DayLoaded) {
             return ListView.builder(
-              itemCount: state.days.length,
+              itemCount: state.only(day).length,
               itemBuilder: (context, index) {
-                final Day displayedDay = state.days[index];
+                final Day displayedDay = state.only(day)[index];
                 return this.buildTile(displayedDay);
               },
             );
@@ -179,7 +182,7 @@ class DayList extends StatelessWidget {
 class DayButtons extends StatelessWidget {
   final Day displayedDay;
 
-  final bool dangerous = false;
+  final bool dangerous = true;
 
   const DayButtons({Key key, @required this.displayedDay}) : super(key: key);
 

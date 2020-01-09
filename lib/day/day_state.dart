@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../common/date.dart';
 import 'day.dart';
 
 abstract class DayState extends Equatable {
@@ -18,4 +19,10 @@ class DayLoaded extends DayState {
 
   @override
   List<Object> get props => [days];
+
+  List<Day> only(Date date) {
+    return this.days.where((Day day) {
+      return day.day == date.value;
+    }).toList();
+  }
 }
