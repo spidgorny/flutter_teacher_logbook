@@ -1,53 +1,53 @@
 import 'package:sembast/sembast.dart';
 
 import '../app_database.dart';
-import 'class.dart';
+import 'property.dart';
 
-class ClassDao {
-  static const String CLASS_STORE_NAME = 'class';
+class PropertyDao {
+  static const String CLASS_STORE_NAME = 'property';
 
   // A Store with int keys and Map<String, dynamic> values.
   // This Store acts like a persistent map, values of which are Fruit objects converted to Map
-  final _classStore = intMapStoreFactory.store(CLASS_STORE_NAME);
+  final _propertyStore = intMapStoreFactory.store(CLASS_STORE_NAME);
 
   // Private getter to shorten the amount of code needed to get the
   // singleton instance of an opened database.
   Future<Database> get _db async => await AppDatabase.instance.database;
 
-  Future insert(Class fruit) async {
-    var key = await _classStore.add(await _db, fruit.toMapData());
-    print('[ClassDao.insert] key: $key');
+  Future insert(Property fruit) async {
+    var key = await _propertyStore.add(await _db, fruit.toMapData());
+    print('[PropertyDao.insert] key: $key');
     return key;
   }
 
-  Future update(Class fruit) async {
+  Future update(Property fruit) async {
     // For filtering by key (ID), RegEx, greater than, and many other criteria,
     // we use a Finder.
     final finder = Finder(filter: Filter.byKey(fruit.id));
-    return await _classStore.update(
+    return await _propertyStore.update(
       await _db,
       fruit.toMap(),
       finder: finder,
     );
   }
 
-  Future delete(Class me) async {
+  Future delete(Property me) async {
     print('[dao] delete $me');
     final finder = Finder(filter: Filter.byKey(me.id));
     print('[finder] $finder');
-    return await _classStore.delete(
+    return await _propertyStore.delete(
       await _db,
       finder: finder,
     );
   }
 
-  Future<List<Class>> getAllSortedByName() async {
+  Future<List<Property>> getAllSortedByName() async {
     // Finder object can also sort data.
     final finder = Finder(sortOrders: [
       SortOrder('name'),
     ]);
 
-    final recordSnapshots = await _classStore.find(
+    final recordSnapshots = await _propertyStore.find(
       await _db,
       finder: finder,
     );
@@ -55,7 +55,7 @@ class ClassDao {
     // Making a List<Fruit> out of List<RecordSnapshot>
     return recordSnapshots.map((RecordSnapshot snapshot) {
       print('[snapshot] $snapshot');
-      return Class.fromMap(snapshot.key, snapshot.value);
+      return Property.fromMap(snapshot.key, snapshot.value);
     }).toList();
   }
 }

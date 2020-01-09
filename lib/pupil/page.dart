@@ -44,8 +44,7 @@ class PupilFAB extends StatelessWidget {
             new InputDialog(context, title: 'New Pupil', hint: 'Max Musterman');
         final String name = await dialog.asyncInputDialog();
         if (name != null && name.isNotEmpty) {
-          BlocProvider.of<PupilBloc>(context)
-              .add(AddPupil(name, int.parse(klass.id)));
+          BlocProvider.of<PupilBloc>(context).add(AddPupil(name, klass.id));
         }
       },
     );

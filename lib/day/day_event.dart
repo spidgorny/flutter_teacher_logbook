@@ -13,9 +13,12 @@ class LoadDay extends DayEvent {}
 
 class AddDay extends DayEvent {
   final String id;
-  final String name;
+  final int pupil;
+  final String day;
+  final int property;
+  final String value;
 
-  AddDay(this.name, {this.id});
+  AddDay(this.pupil, this.day, this.property, this.value, {this.id});
 }
 
 class UpdateDay extends DayEvent {

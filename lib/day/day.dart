@@ -5,28 +5,36 @@ class Day extends Equatable {
   // Id will be gotten from the database.
   // It's automatically generated & unique for every stored Fruit.
   final String id;
-  final String name;
   final int pupil;
+  final String day;
+  final int property;
+  final String value;
 
   Day({
     @required this.id,
-    @required this.name,
     @required this.pupil,
+    @required this.day,
+    @required this.property,
+    @required this.value,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'name': name,
       'pupil': pupil,
+      'day': day,
+      'property': property,
+      'value': value,
     };
   }
 
   /// without ID
   Map<String, dynamic> toMapData() {
     return {
-      'name': name,
       'pupil': pupil,
+      'day': day,
+      'property': property,
+      'value': value,
     };
   }
 
@@ -37,13 +45,15 @@ class Day extends Equatable {
   static Day fromMap(String id, Map<String, dynamic> map) {
     var instance = Day(
       id: id,
-      name: map['name'],
       pupil: map['pupil'],
+      day: map['day'],
+      property: map['property'],
+      value: map['value'],
     );
     print('[Day.fromMap] ${instance.toString()}');
     return instance;
   }
 
   @override
-  List<Object> get props => [id, name, pupil];
+  List<Object> get props => [id, pupil, day, property, value];
 }

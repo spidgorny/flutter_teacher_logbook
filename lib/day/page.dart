@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_teacher_logbook/common/date.dart';
+import 'package:flutter_teacher_logbook/property/page.dart';
 import 'package:flutter_teacher_logbook/pupil/pupil.dart';
 
-import '../widget/input_dialog.dart';
 import 'day.dart';
 import 'day_bloc.dart';
 import 'day_event.dart';
@@ -11,20 +11,20 @@ import 'day_state.dart';
 
 class DayPage extends StatefulWidget {
   final Pupil pupil;
-  final Date date;
+  final Date day;
 
-  const DayPage(this.pupil, this.date, {Key key}) : super(key: key);
+  const DayPage(this.pupil, this.day, {Key key}) : super(key: key);
 
   @override
   _DayPageState createState() => _DayPageState();
 }
 
 class _DayPageState extends State<DayPage> {
-  Date date;
+  Date day;
 
   void initState() {
     super.initState();
-    date = widget.date;
+    day = widget.day;
   }
 
   @override
@@ -47,7 +47,7 @@ class _DayPageState extends State<DayPage> {
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
-                  child: Text(date.value),
+                  child: Text(day != null ? day.value : ''),
                 ),
                 IconButton(
                   icon: Icon(Icons.calendar_today),
@@ -57,22 +57,22 @@ class _DayPageState extends State<DayPage> {
                 )
               ]),
           body: DayList(),
-          floatingActionButton: DayFAB(),
+          floatingActionButton: DayFAB(widget.pupil, day),
         ));
   }
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: date.toDateTime,
+        initialDate: day.toDateTime,
         firstDate: DateTime(2020, 1),
         lastDate: DateTime(2101));
     if (picked != null) {
       var pickedDate = new Date.from(picked);
 
-      if (picked != date.toDateTime) {
+      if (picked != day.toDateTime) {
         setState(() {
-          date = pickedDate;
+          day = pickedDate;
         });
       }
     }
@@ -80,7 +80,12 @@ class _DayPageState extends State<DayPage> {
 }
 
 class DayFAB extends StatelessWidget {
-  const DayFAB({
+  final Pupil pupil;
+  final Date day;
+
+  const DayFAB(
+    this.pupil,
+    this.day, {
     Key key,
   }) : super(key: key);
 
@@ -89,10 +94,13 @@ class DayFAB extends StatelessWidget {
     return FloatingActionButton(
       child: Icon(Icons.add),
       onPressed: () async {
-        final InputDialog dialog = new InputDialog(context);
-        final String name = await dialog.asyncInputDialog();
-        if (name != null && name.isNotEmpty) {
-          BlocProvider.of<DayBloc>(context).add(AddDay(name));
+        int propertyID = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PropertyPage()),
+        );
+        if (propertyID != null) {
+          BlocProvider.of<DayBloc>(context)
+              .add(AddDay(pupil.id, day.value, propertyID, ''));
         }
       },
     );
@@ -122,8 +130,8 @@ class DayList extends StatelessWidget {
               itemBuilder: (context, index) {
                 final Day displayedDay = state.days[index];
                 return ListTile(
-                  title: Text(
-                      displayedDay.name ?? '' + ' [' + displayedDay.id + ']'),
+                  title: Text(displayedDay.property ??
+                      '' + ' [' + displayedDay.id + ']'),
                   trailing: DayButtons(displayedDay: displayedDay),
                   onTap: () {},
                 );

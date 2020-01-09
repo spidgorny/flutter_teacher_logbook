@@ -61,8 +61,8 @@ class ClassList extends StatelessWidget {
             itemBuilder: (context, index) {
               final Class displayedClass = state.classes[index];
               return ListTile(
-                title: Text(
-                    displayedClass.name ?? '' + ' [' + displayedClass.id + ']'),
+                title: Text(displayedClass.name ??
+                    '' + ' [' + displayedClass.id.toString() + ']'),
                 trailing: ClassButtons(displayedClass: displayedClass),
                 onTap: () {
                   Navigator.push(

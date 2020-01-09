@@ -12,7 +12,7 @@ abstract class ClassEvent extends Equatable {
 class LoadClass extends ClassEvent {}
 
 class AddClass extends ClassEvent {
-  final String id;
+  final int id;
   final String name;
 
   AddClass(this.name, {this.id});
