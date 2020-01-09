@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_iconpicker/Serialization/iconDataSerialization.dart';
 
 import 'input_dialog.dart';
 import 'property.dart';
@@ -37,10 +34,9 @@ class PropertyFAB extends StatelessWidget {
       onPressed: () async {
         final PropertyInputDialog dialog = new PropertyInputDialog(context,
             title: 'New Property', hint: 'Absent, Bad Behavior, Rude');
-        final Property property = await dialog.asyncInputDialog();
+        final Property property = await dialog.asyncInputDialog(Property());
         if (property != null) {
-          BlocProvider.of<PropertyBloc>(context)
-              .add(AddProperty(property.name, property.icon));
+          BlocProvider.of<PropertyBloc>(context).add(AddProperty(property));
         }
       },
     );
@@ -69,27 +65,15 @@ class PropertyList extends StatelessWidget {
             itemBuilder: (context, index) {
               final Property displayedProperty = state.properties[index];
 
-              IconData icon = IconData(0xe3af, fontFamily: 'MaterialIcons');
-
-              print('[displayedProperty]: ${displayedProperty.icon}');
-              if (displayedProperty.icon != null) {
-                var iconMap = jsonDecode(displayedProperty.icon);
-                print('[iconMap] $iconMap');
-                if (iconMap) {
-                  icon = mapToIconData(iconMap);
-                }
-              }
+              // default
+              IconData icon = displayedProperty.iconData;
               return ListTile(
-                leading: Icon(icon),
+                leading: icon != null ? Icon(icon) : null,
                 title: Text(displayedProperty.name ??
                     '' + ' [' + displayedProperty.id.toString() + ']'),
                 trailing: PropertyButtons(displayedProperty: displayedProperty),
                 onTap: () {
-//                  Navigator.push(
-//                    context,
-//                    MaterialPageRoute(
-//                        builder: (context) => PupilPage(displayedProperty)),
-//                  );
+                  Navigator.pop(context, displayedProperty);
                 },
               );
             },
@@ -115,13 +99,20 @@ class PropertyButtons extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-//        IconButton(
-//          icon: Icon(Icons.refresh),
-//          onPressed: () {
-//            BlocProvider.of<PropertyBloc>(context)
-//                .add(UpdateProperty(displayedFruit));
-//          },
-//        ),
+        IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: () async {
+            final PropertyInputDialog dialog = new PropertyInputDialog(context,
+                title: 'New Property', hint: 'Absent, Bad Behavior, Rude');
+            final Property modifiedProperty =
+                await dialog.asyncInputDialog(displayedProperty);
+            print('[PropertyButtons] modifiedProperty: $modifiedProperty');
+            if (modifiedProperty != null) {
+              BlocProvider.of<PropertyBloc>(context)
+                  .add(UpdateProperty(modifiedProperty));
+            }
+          },
+        ),
         IconButton(
           icon: Icon(Icons.delete_outline),
           onPressed: dangerous

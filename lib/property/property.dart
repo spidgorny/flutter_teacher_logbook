@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
+import 'package:flutter_iconpicker/Serialization/iconDataSerialization.dart';
 import 'package:meta/meta.dart';
 
 class Property extends Equatable {
@@ -6,6 +9,8 @@ class Property extends Equatable {
   // It's automatically generated & unique for every stored Fruit.
   final int id;
   final String name;
+
+  // JSON
   final String icon;
 
   Property({
@@ -46,4 +51,11 @@ class Property extends Equatable {
 
   @override
   List<Object> get props => [id, name, icon];
+
+  get iconData {
+    if (icon == null) {
+      return null;
+    }
+    return mapToIconData(jsonDecode(icon));
+  }
 }

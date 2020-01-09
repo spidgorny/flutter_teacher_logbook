@@ -12,11 +12,12 @@ abstract class PropertyEvent extends Equatable {
 class LoadProperty extends PropertyEvent {}
 
 class AddProperty extends PropertyEvent {
-  final int id;
-  final String name;
-  final String icon;
+  final Property me;
 
-  AddProperty(this.name, this.icon, {this.id});
+  AddProperty(this.me);
+
+  @override
+  List<Object> get props => [me];
 }
 
 class UpdateProperty extends PropertyEvent {

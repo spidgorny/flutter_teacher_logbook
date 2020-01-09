@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_teacher_logbook/common/date.dart';
 import 'package:flutter_teacher_logbook/property/page.dart';
-import 'package:flutter_teacher_logbook/pupil/pupil.dart';
 
+import '../pupil/pupil.dart';
 import 'day.dart';
 import 'day_bloc.dart';
 import 'day_event.dart';

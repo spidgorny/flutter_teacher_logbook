@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/Serialization/iconDataSerialization.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
-import 'package:flutter_teacher_logbook/property/property.dart';
+
+import 'property.dart';
 
 class PropertyInputDialog {
   final BuildContext context;
@@ -14,8 +15,7 @@ class PropertyInputDialog {
   PropertyInputDialog(this.context,
       {this.title = 'New Class', this.label = 'Name', this.hint = '8A'});
 
-  Future<Property> asyncInputDialog() async {
-    Property property;
+  Future<Property> asyncInputDialog(Property property) async {
     return showDialog<Property>(
       context: context,
       barrierDismissible:
@@ -27,6 +27,7 @@ class PropertyInputDialog {
           content: PickerForm(
               label: label,
               hint: hint,
+              property: property,
               onChange: (Property prop) {
                 property = prop;
               }),
@@ -49,9 +50,11 @@ typedef void PropertyCallback(Property prop);
 class PickerForm extends StatefulWidget {
   final String label;
   final String hint;
+  final Property property;
   final PropertyCallback onChange;
 
-  const PickerForm({Key key, this.label, this.hint, this.onChange})
+  const PickerForm(
+      {Key key, this.label, this.hint, this.onChange, this.property})
       : super(key: key);
 
   @override
@@ -59,8 +62,26 @@ class PickerForm extends StatefulWidget {
 }
 
 class _PickerFormState extends State<PickerForm> {
-  String teamName = '';
-  IconData _icon = Icons.bug_report;
+  IconData _icon;
+  var textEditingController;
+
+  @override
+  void initState() {
+    super.initState();
+    textEditingController = TextEditingController(text: widget.property.name);
+    _icon = widget.property.iconData;
+  }
+
+  Property get property {
+    var iconJson = jsonEncode(iconDataToMap(_icon));
+    print('[PickerForm] icon: $iconJson');
+    var prop = Property(
+        id: widget.property.id,
+        name: textEditingController.text,
+        icon: iconJson);
+    print('[PickerForm] prop: $prop');
+    return prop;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +92,10 @@ class _PickerFormState extends State<PickerForm> {
           autofocus: true,
           decoration: new InputDecoration(
               labelText: widget.label, hintText: widget.hint),
+          controller: textEditingController,
           onChanged: (value) {
             setState(() {
-              teamName = value;
-              widget.onChange(Property(
-                  name: teamName, icon: jsonEncode(iconDataToMap(_icon))));
+              widget.onChange(this.property);
             });
           },
         )),
@@ -103,8 +123,7 @@ class _PickerFormState extends State<PickerForm> {
 
     setState(() {
       _icon = iconData;
-      widget.onChange(
-          Property(name: teamName, icon: jsonEncode(iconDataToMap(_icon))));
+      widget.onChange(this.property);
     });
 
     debugPrint('Picked Icon:  $_icon');

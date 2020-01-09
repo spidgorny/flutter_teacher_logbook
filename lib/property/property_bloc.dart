@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 
-import 'property.dart';
 import 'property_dao.dart';
 import 'property_event.dart';
 import 'property_state.dart';
@@ -24,7 +23,7 @@ class PropertyBloc extends Bloc<PropertyEvent, PropertyState> {
       yield PropertyLoading();
       yield* _reloadProperty();
     } else if (event is AddProperty) {
-      await _propertyDao.insert(new Property(id: event.id, name: event.name));
+      await _propertyDao.insert(event.me);
       yield* _reloadProperty();
     } else if (event is UpdateProperty) {
       int result = await _propertyDao.update(event.me);
