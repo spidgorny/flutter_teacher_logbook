@@ -12,10 +12,12 @@ abstract class ClassEvent extends Equatable {
 class LoadClass extends ClassEvent {}
 
 class AddClass extends ClassEvent {
-  final int id;
-  final String name;
+  final Class me;
 
-  AddClass(this.name, {this.id});
+  AddClass(this.me);
+
+  @override
+  List<Object> get props => [me];
 }
 
 class UpdateClass extends ClassEvent {

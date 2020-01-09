@@ -33,7 +33,7 @@ class ClassFAB extends StatelessWidget {
         final InputDialog dialog = new InputDialog(context);
         final String name = await dialog.asyncInputDialog();
         if (name != null && name.isNotEmpty) {
-          BlocProvider.of<ClassBloc>(context).add(AddClass(name));
+          BlocProvider.of<ClassBloc>(context).add(AddClass(Class(name: name)));
         }
       },
     );

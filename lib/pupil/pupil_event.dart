@@ -12,11 +12,12 @@ abstract class PupilEvent extends Equatable {
 class LoadPupil extends PupilEvent {}
 
 class AddPupil extends PupilEvent {
-  final int id;
-  final String name;
-  final int klass;
+  final Pupil me;
 
-  AddPupil(this.name, this.klass, {this.id});
+  AddPupil(this.me);
+
+  @override
+  List<Object> get props => [me];
 }
 
 class UpdatePupil extends PupilEvent {

@@ -12,13 +12,12 @@ abstract class DayEvent extends Equatable {
 class LoadDay extends DayEvent {}
 
 class AddDay extends DayEvent {
-  final String id;
-  final int pupil;
-  final String day;
-  final int property;
-  final String value;
+  final Day me;
 
-  AddDay(this.pupil, this.day, this.property, this.value, {this.id});
+  AddDay(this.me);
+
+  @override
+  List<Object> get props => [me];
 }
 
 class UpdateDay extends DayEvent {

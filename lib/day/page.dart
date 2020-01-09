@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_teacher_logbook/common/date.dart';
 import 'package:flutter_teacher_logbook/property/page.dart';
 
+import '../property/property.dart';
+import '../property/property_bloc.dart';
+import '../property/property_event.dart';
+import '../property/property_state.dart';
 import '../pupil/pupil.dart';
 import 'day.dart';
 import 'day_bloc.dart';
@@ -29,8 +33,15 @@ class _DayPageState extends State<DayPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (BuildContext context) => DayBloc(widget.pupil)..add(LoadDay()),
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<DayBloc>(
+              create: (BuildContext context) =>
+                  DayBloc(widget.pupil)..add(LoadDay())),
+          BlocProvider<PropertyBloc>(
+              create: (BuildContext context) =>
+                  PropertyBloc()..add(LoadProperty())),
+        ],
         child: Scaffold(
           appBar: AppBar(
 //              leading: Padding(
@@ -94,13 +105,17 @@ class DayFAB extends StatelessWidget {
     return FloatingActionButton(
       child: Icon(Icons.add),
       onPressed: () async {
-        int propertyID = await Navigator.push(
+        Property property = await Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PropertyPage()),
         );
-        if (propertyID != null) {
-          BlocProvider.of<DayBloc>(context)
-              .add(AddDay(pupil.id, day.value, propertyID, ''));
+        if (property != null) {
+          BlocProvider.of<DayBloc>(context).add(AddDay(Day(
+              id: null,
+              pupil: pupil.id,
+              day: day.value,
+              property: property.id,
+              value: '')));
         }
       },
     );
@@ -129,12 +144,7 @@ class DayList extends StatelessWidget {
               itemCount: state.days.length,
               itemBuilder: (context, index) {
                 final Day displayedDay = state.days[index];
-                return ListTile(
-                  title: Text(displayedDay.property ??
-                      '' + ' [' + displayedDay.id + ']'),
-                  trailing: DayButtons(displayedDay: displayedDay),
-                  onTap: () {},
-                );
+                return this.buildTile(displayedDay);
               },
             );
           } else {
@@ -143,6 +153,26 @@ class DayList extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Widget buildTile(Day displayedDay) {
+    return BlocBuilder<PropertyBloc, PropertyState>(
+        builder: (BuildContext context, PropertyState state) {
+      Property property;
+      if (displayedDay.property != null) {
+        if (state is PropertyLoading) {
+          property = Property(name: displayedDay.property.toString());
+        } else if (state is PropertyLoaded) {
+          property = state.findByID(displayedDay.property);
+        }
+      }
+      return ListTile(
+        leading: property.icon != null ? Icon(property.iconData) : null,
+        title: Text(property.name + ' [' + displayedDay.id.toString() + ']'),
+        trailing: DayButtons(displayedDay: displayedDay),
+        onTap: () {},
+      );
+    });
   }
 }
 

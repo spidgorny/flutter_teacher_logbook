@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 
 import '../class/class.dart';
-import 'pupil.dart';
 import 'pupil_dao.dart';
 import 'pupil_event.dart';
 import 'pupil_state.dart';
@@ -32,8 +31,7 @@ class PupilBloc extends Bloc<PupilEvent, PupilState> {
       yield PupilLoading();
       yield* _reloadPupil();
     } else if (event is AddPupil) {
-      await _classDao
-          .insert(new Pupil(id: event.id, name: event.name, klass: klass.id));
+      await _classDao.insert(event.me);
       yield* _reloadPupil();
     } else if (event is UpdatePupil) {
       int result = await _classDao.update(event.me);

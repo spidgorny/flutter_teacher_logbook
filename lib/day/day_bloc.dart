@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 
 import '../pupil/pupil.dart';
-import 'day.dart';
 import 'day_dao.dart';
 import 'day_event.dart';
 import 'day_state.dart';
@@ -30,8 +29,7 @@ class DayBloc extends Bloc<DayEvent, DayState> {
       yield DayLoading();
       yield* _reloadDay();
     } else if (event is AddDay) {
-      await _dayDao
-          .insert(new Day(id: event.id, day: event.day, pupil: pupil.id));
+      await _dayDao.insert(event.me);
       yield* _reloadDay();
     } else if (event is UpdateDay) {
       int result = await _dayDao.update(event.me);

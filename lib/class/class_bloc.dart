@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 
-import 'class.dart';
 import 'class_dao.dart';
 import 'class_event.dart';
 import 'class_state.dart';
@@ -24,7 +23,7 @@ class ClassBloc extends Bloc<ClassEvent, ClassState> {
       yield ClassLoading();
       yield* _reloadClass();
     } else if (event is AddClass) {
-      await _classDao.insert(new Class(id: event.id, name: event.name));
+      await _classDao.insert(event.me);
       yield* _reloadClass();
     } else if (event is UpdateClass) {
       int result = await _classDao.update(event.me);
