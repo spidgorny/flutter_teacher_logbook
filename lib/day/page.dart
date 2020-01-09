@@ -9,28 +9,73 @@ import 'day_bloc.dart';
 import 'day_event.dart';
 import 'day_state.dart';
 
-class DayPage extends StatelessWidget {
+class DayPage extends StatefulWidget {
   final Pupil pupil;
   final Date date;
 
   const DayPage(this.pupil, this.date, {Key key}) : super(key: key);
 
   @override
+  _DayPageState createState() => _DayPageState();
+}
+
+class _DayPageState extends State<DayPage> {
+  Date date;
+
+  void initState() {
+    super.initState();
+    date = widget.date;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => DayBloc(pupil)..add(LoadDay()),
+        create: (BuildContext context) => DayBloc(widget.pupil)..add(LoadDay()),
         child: Scaffold(
-          appBar: AppBar(title: Text(pupil.name), actions: [
-            IconButton(
-              icon: Icon(Icons.calendar_today),
-              onPressed: () {
-                print('new date');
-              },
-            )
-          ]),
+          appBar: AppBar(
+//              leading: Padding(
+//                padding: const EdgeInsets.all(8.0),
+//                child: Text(
+//                  widget.pupil.name,
+//                  style: TextStyle(fontSize: 18),
+//                ),
+//              ),
+              title: Text(widget.pupil.name, style: TextStyle(fontSize: 18)),
+//              bottom: PreferredSize(
+//                  preferredSize: const Size.fromHeight(16.0),
+//                  child: Text(date.value)),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Text(date.value),
+                ),
+                IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: () {
+                    _selectDate(context);
+                  },
+                )
+              ]),
           body: DayList(),
           floatingActionButton: DayFAB(),
         ));
+  }
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: date.toDateTime,
+        firstDate: DateTime(2020, 1),
+        lastDate: DateTime(2101));
+    if (picked != null) {
+      var pickedDate = new Date.from(picked);
+
+      if (picked != date.toDateTime) {
+        setState(() {
+          date = pickedDate;
+        });
+      }
+    }
   }
 }
 

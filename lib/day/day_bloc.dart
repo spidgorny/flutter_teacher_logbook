@@ -30,7 +30,8 @@ class DayBloc extends Bloc<DayEvent, DayState> {
       yield DayLoading();
       yield* _reloadDay();
     } else if (event is AddDay) {
-      await _dayDao.insert(new Day(id: event.id, name: event.name));
+      await _dayDao
+          .insert(new Day(id: event.id, name: event.name, pupil: pupil.id));
       yield* _reloadDay();
     } else if (event is UpdateDay) {
       int result = await _dayDao.update(event.me);
