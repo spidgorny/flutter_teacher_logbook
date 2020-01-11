@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
-import '../global.dart';
+import '../app_database.dart';
 
 class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -21,22 +26,46 @@ class _MyAppBarState extends State<MyAppBar> {
     return AppBar(
       title: Text(widget.title ?? 'Teacher Logbook'),
       actions: <Widget>[
+//        IconButton(
+//          icon: Icon(Icons.category),
+//          onPressed: () {
+//            var event = GlobalEvent.SwitchPageFruit;
+//            print('[GlobalEvent emit] $event');
+//            streamController.add(event);
+//          },
+//        ),
+//        IconButton(
+//          icon: Icon(Icons.assignment_ind),
+//          onPressed: () {
+//            var event = GlobalEvent.SwitchPageClass;
+//            print('[GlobalEvent emit] $event');
+//            streamController.add(event);
+//          },
+//        ),
         IconButton(
-          icon: Icon(Icons.category),
-          onPressed: () {
-            var event = GlobalEvent.SwitchPageFruit;
-            print('[GlobalEvent emit] $event');
-            streamController.add(event);
+          icon: Icon(Icons.control_point_duplicate),
+          onPressed: () async {
+            print('[Backup]');
+            var dbPath = await AppDatabase.instance.dbPath;
+            print(dbPath);
+            File file = File(dbPath);
+
+            final extDir = await getExternalStorageDirectory();
+            final ymd = DateTime.now().toIso8601String().replaceAll(':', '-');
+            final extPath = join(extDir.path, 'teacher-logbook.' + ymd + '.db');
+            print(extPath);
+            file.copy(extPath);
+
+            Fluttertoast.showToast(
+                msg: "Backup is copied to " + extPath,
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIos: 15,
+                backgroundColor: Colors.green,
+                textColor: Colors.white,
+                fontSize: 16.0);
           },
         ),
-        IconButton(
-          icon: Icon(Icons.assignment_ind),
-          onPressed: () {
-            var event = GlobalEvent.SwitchPageClass;
-            print('[GlobalEvent emit] $event');
-            streamController.add(event);
-          },
-        )
       ],
     );
   }
