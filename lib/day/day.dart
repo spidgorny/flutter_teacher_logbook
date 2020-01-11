@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 class Day extends Equatable {
   // Id will be gotten from the database.
   // It's automatically generated & unique for every stored Fruit.
-  final String id;
+  final int id;
   final int pupil;
   final String day;
   final int property;
@@ -42,7 +42,7 @@ class Day extends Equatable {
     return 'Day(${this.toMap().toString()})';
   }
 
-  static Day fromMap(String id, Map<String, dynamic> map) {
+  static Day fromMap(int id, Map<String, dynamic> map) {
     var instance = Day(
       id: id,
       pupil: map['pupil'],

@@ -9,7 +9,7 @@ class InputDialog {
   InputDialog(this.context,
       {this.title = 'New Class', this.label = 'Name', this.hint = '8A'});
 
-  Future<String> asyncInputDialog() async {
+  Future<String> asyncInputDialog({String initialText}) async {
     String teamName = '';
     return showDialog<String>(
       context: context,
@@ -22,6 +22,7 @@ class InputDialog {
             children: <Widget>[
               new Expanded(
                   child: new TextField(
+                controller: TextEditingController()..text = initialText,
                 autofocus: true,
                 decoration:
                     new InputDecoration(labelText: label, hintText: hint),

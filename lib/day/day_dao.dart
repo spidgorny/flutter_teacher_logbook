@@ -25,20 +25,20 @@ class DayDao {
     return key;
   }
 
-  Future update(Day fruit) async {
+  Future update(Day day) async {
     // For filtering by key (ID), RegEx, greater than, and many other criteria,
     // we use a Finder.
-    final finder = Finder(filter: Filter.byKey(fruit.id));
+    final finder = Finder(filter: Filter.byKey(day.id));
     return await _dayStore.update(
       await _db,
-      fruit.toMap(),
+      day.toMap(),
       finder: finder,
     );
   }
 
   Future delete(Day me) async {
     print('[dao] delete $me');
-    final finder = Finder(filter: Filter.byKey(int.parse(me.id)));
+    final finder = Finder(filter: Filter.byKey(me.id));
     print('[finder] $finder');
     return await _dayStore.delete(
       await _db,
@@ -61,7 +61,7 @@ class DayDao {
     // Making a List<Fruit> out of List<RecordSnapshot>
     return recordSnapshots.map((RecordSnapshot snapshot) {
       print('[snapshot] $snapshot');
-      return Day.fromMap(snapshot.key.toString(), snapshot.value);
+      return Day.fromMap(snapshot.key, snapshot.value);
     }).toList();
   }
 }

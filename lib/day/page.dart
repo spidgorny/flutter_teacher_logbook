@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_teacher_logbook/widget/input_dialog.dart';
 
 import '../common/date.dart';
 import '../property/page.dart';
@@ -170,12 +171,27 @@ class DayList extends StatelessWidget {
         }
       }
       return ListTile(
-        leading: property.icon != null ? Icon(property.iconData) : null,
-        title: Text(
-            (property.name ?? '') + ' [' + displayedDay.id.toString() + ']'),
-        trailing: DayButtons(displayedDay: displayedDay),
-        onTap: () {},
-      );
+          leading: property.icon != null ? Icon(property.iconData) : null,
+          title: Text(
+              (property.name ?? '') + ' [' + displayedDay.id.toString() + ']'),
+          trailing: DayButtons(displayedDay: displayedDay),
+          subtitle: Text(displayedDay.value),
+          onTap: () async {
+            final InputDialog dialog = new InputDialog(context,
+                title: 'Comment', hint: 'Worked well, 1 - 5');
+            final String comment =
+                await dialog.asyncInputDialog(initialText: displayedDay.value);
+            if (comment != null && comment.isNotEmpty) {
+              Day newDay = new Day(
+                  id: displayedDay.id,
+                  pupil: displayedDay.pupil,
+                  day: displayedDay.day,
+                  property: displayedDay.property,
+                  value: comment);
+              print(['DayList', 'onTap', 'newDay', newDay]);
+              BlocProvider.of<DayBloc>(context).add(UpdateDay(newDay));
+            }
+          });
     });
   }
 }
