@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_teacher_logbook/common/date.dart';
 import 'package:flutter_teacher_logbook/day/page.dart';
+import 'package:flutter_teacher_logbook/page/report.dart';
 
 import '../class/class.dart';
 import '../widget/input_dialog.dart';
@@ -20,7 +21,20 @@ class PupilPage extends StatelessWidget {
     return BlocProvider(
         create: (BuildContext context) => PupilBloc(klass)..add(LoadPupil()),
         child: Scaffold(
-          appBar: AppBar(title: Text(klass.name)),
+          appBar: AppBar(
+            title: Text(klass.name),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.report),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Report()),
+                  );
+                },
+              )
+            ],
+          ),
           body: PupilList(),
           floatingActionButton: PupilFAB(klass: klass),
         ));
