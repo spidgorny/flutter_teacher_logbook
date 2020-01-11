@@ -13,6 +13,8 @@ class Date extends Equatable {
   @override
   List<Object> get props => [value];
 
+  String toString() => this.value;
+
   DateTime get toDateTime {
     var parts = value.split('-');
     var year = int.parse(parts[0]);

@@ -29,7 +29,10 @@ class PupilPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Report()),
+                    MaterialPageRoute(
+                        builder: (context) => Report(
+                              klass: this.klass,
+                            )),
                   );
                 },
               )
