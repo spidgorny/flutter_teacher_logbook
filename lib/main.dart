@@ -1,6 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_teacher_logbook/property/input_dialog.dart';
+import 'package:flutter_teacher_logbook/property/property.dart';
+import 'package:flutter_teacher_logbook/property/property_bloc.dart';
+import 'package:flutter_teacher_logbook/property/property_event.dart';
 
 import 'class/class_bloc.dart';
 import 'class/class_event.dart';
@@ -87,23 +91,41 @@ class _MyHomePageState extends State<MyHomePage> {
     bool isDark = brightnessValue == Brightness.dark;
     print('Theme: ' + (isDark ? 'dark' : 'light'));
     return MultiBlocProvider(
-      providers: [
-        BlocProvider<FruitBloc>(
-            create: (BuildContext context) => FruitBloc()..add(LoadFruits())),
-        BlocProvider<ClassBloc>(
-            create: (BuildContext context) => ClassBloc()..add(LoadClass())),
-      ],
-      child: MaterialApp(
-        title: 'Teacher Logbook',
-        theme: ThemeData(
-          primarySwatch: Colors.yellow,
-          accentColor: Colors.redAccent,
+        providers: [
+          BlocProvider<FruitBloc>(
+              create: (BuildContext context) => FruitBloc()..add(LoadFruits())),
+          BlocProvider<ClassBloc>(
+              create: (BuildContext context) => ClassBloc()..add(LoadClass())),
+          BlocProvider<PropertyBloc>(
+            create: (BuildContext context) =>
+                PropertyBloc()..add(LoadProperty()),
+          ),
+        ],
+        child: MaterialApp(
+          title: 'Teacher Logbook',
+          theme: ThemeData(
+            primarySwatch: Colors.yellow,
+            accentColor: Colors.redAccent,
+          ),
+          darkTheme: ThemeData.dark(),
+          home: classOrFruit(),
+//          home: PickerForm()),
+        ));
+  }
+
+  Widget classOrFruit() {
+    return currentPage == MyHomePage.PAGE_CLASS ? ClassPage() : FruitHomePage();
+  }
+
+  Scaffold pickerForm() {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('PickerForm'),
         ),
-        darkTheme: ThemeData.dark(),
-        home: currentPage == MyHomePage.PAGE_CLASS
-            ? ClassPage()
-            : FruitHomePage(),
-      ),
-    );
+        body: PickerForm(
+            property: new Property(),
+            onChange: (Property prop) {
+              print('[asyncInputDialog] onChange: $prop');
+            }));
   }
 }

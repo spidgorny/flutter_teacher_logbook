@@ -171,7 +171,8 @@ class DayList extends StatelessWidget {
       }
       return ListTile(
         leading: property.icon != null ? Icon(property.iconData) : null,
-        title: Text(property.name + ' [' + displayedDay.id.toString() + ']'),
+        title: Text(
+            (property.name ?? '') + ' [' + displayedDay.id.toString() + ']'),
         trailing: DayButtons(displayedDay: displayedDay),
         onTap: () {},
       );

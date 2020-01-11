@@ -69,8 +69,10 @@ class PropertyList extends StatelessWidget {
               IconData icon = displayedProperty.iconData;
               return ListTile(
                 leading: icon != null ? Icon(icon) : null,
-                title: Text(displayedProperty.name ??
-                    '' + ' [' + displayedProperty.id.toString() + ']'),
+                title: Text((displayedProperty.name ?? '') +
+                    ' [' +
+                    displayedProperty.id.toString() +
+                    ']'),
                 trailing: PropertyButtons(displayedProperty: displayedProperty),
                 onTap: () {
                   Navigator.pop(context, displayedProperty);

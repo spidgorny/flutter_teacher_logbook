@@ -29,7 +29,9 @@ class PropertyInputDialog {
               hint: hint,
               property: property,
               onChange: (Property prop) {
+                print('[asyncInputDialog] onChange: $prop');
                 property = prop;
+                print('[asyncInputDialog] onChange: $property');
               }),
           actions: <Widget>[
             FlatButton(
@@ -54,7 +56,11 @@ class PickerForm extends StatefulWidget {
   final PropertyCallback onChange;
 
   const PickerForm(
-      {Key key, this.label, this.hint, this.onChange, this.property})
+      {Key key,
+      this.label,
+      this.hint,
+      @required this.onChange,
+      @required this.property})
       : super(key: key);
 
   @override
@@ -62,8 +68,11 @@ class PickerForm extends StatefulWidget {
 }
 
 class _PickerFormState extends State<PickerForm> {
-  IconData _icon;
-  var textEditingController;
+  IconData _icon = IconData(Icons.add.codePoint,
+      fontFamily: Icons.add.fontFamily,
+      fontPackage: Icons.add.fontPackage,
+      matchTextDirection: Icons.add.matchTextDirection);
+  TextEditingController textEditingController;
 
   @override
   void initState() {
@@ -73,8 +82,11 @@ class _PickerFormState extends State<PickerForm> {
   }
 
   Property get property {
-    var iconJson = jsonEncode(iconDataToMap(_icon));
-    print('[PickerForm] icon: $iconJson');
+    String iconJson;
+    if (_icon != null) {
+      iconJson = jsonEncode(iconDataToMap(_icon));
+      print('[PickerForm] icon: $iconJson');
+    }
     var prop = Property(
         id: widget.property.id,
         name: textEditingController.text,
@@ -93,15 +105,34 @@ class _PickerFormState extends State<PickerForm> {
           decoration: new InputDecoration(
               labelText: widget.label, hintText: widget.hint),
           controller: textEditingController,
+          onEditingComplete: () {
+            print([
+              'Picker Form',
+              'onEditingComplete',
+              textEditingController.text
+            ]);
+          },
           onChanged: (value) {
-            setState(() {
-              widget.onChange(this.property);
-            });
+            print([
+              'Picker Form',
+              'onChanged',
+              value,
+              textEditingController.text
+            ]);
+//            setState(() {
+            // update textEditingController???
+//            });
+            widget.onChange(this.property);
+            print(['widget.onChange called']);
           },
         )),
-        FlatButton(
-          child: Icon(this._icon),
-          onPressed: _pickIcon,
+        Container(
+          decoration:
+              BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+          child: FlatButton(
+            child: Icon(this._icon),
+            onPressed: _pickIcon,
+          ),
         )
       ],
     );
@@ -123,8 +154,8 @@ class _PickerFormState extends State<PickerForm> {
 
     setState(() {
       _icon = iconData;
-      widget.onChange(this.property);
     });
+    widget.onChange(this.property);
 
     debugPrint('Picked Icon:  $_icon');
   }
