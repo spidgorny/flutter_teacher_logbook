@@ -128,22 +128,32 @@ class PupilButtons extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-//        IconButton(
-//          icon: Icon(Icons.refresh),
-//          onPressed: () {
-//            BlocProvider.of<PupilBloc>(context)
-//                .add(UpdatePupil(displayedFruit));
-//          },
-//        ),
         IconButton(
-          icon: Icon(Icons.delete_outline),
-          onPressed: dangerous
-              ? () {
-                  BlocProvider.of<PupilBloc>(context)
-                      .add(DeletePupil(displayedPupil));
-                }
-              : null,
+          icon: Icon(Icons.edit),
+          onPressed: () async {
+            final InputDialog dialog = new InputDialog(context,
+                title: 'Edit Pupil', hint: 'Max Musterman');
+            final String name =
+                await dialog.asyncInputDialog(initialText: displayedPupil.name);
+            if (name != null && name.isNotEmpty) {
+              BlocProvider.of<PupilBloc>(context).add(UpdatePupil(Pupil(
+                  id: displayedPupil.id,
+                  name: name,
+                  klass: displayedPupil.klass)));
+            }
+          },
         ),
+        dangerous
+            ? IconButton(
+                icon: Icon(Icons.delete_outline),
+                onPressed: dangerous
+                    ? () {
+                        BlocProvider.of<PupilBloc>(context)
+                            .add(DeletePupil(displayedPupil));
+                      }
+                    : null,
+              )
+            : Container(),
       ],
     );
   }

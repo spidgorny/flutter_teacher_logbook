@@ -6,7 +6,6 @@ import '../common/date.dart';
 import '../property/page.dart';
 import '../property/property.dart';
 import '../property/property_bloc.dart';
-import '../property/property_event.dart';
 import '../property/property_state.dart';
 import '../pupil/pupil.dart';
 import 'day.dart';
@@ -39,9 +38,9 @@ class _DayPageState extends State<DayPage> {
           BlocProvider<DayBloc>(
               create: (BuildContext context) =>
                   DayBloc(widget.pupil)..add(LoadDay())),
-          BlocProvider<PropertyBloc>(
-              create: (BuildContext context) =>
-                  PropertyBloc()..add(LoadProperty())),
+//          BlocProvider<PropertyBloc>(
+//              create: (BuildContext context) =>
+//                  PropertyBloc()..add(LoadProperty())),
         ],
         child: Scaffold(
           appBar: AppBar(
@@ -172,8 +171,8 @@ class DayList extends StatelessWidget {
       }
       return ListTile(
           leading: property.icon != null ? Icon(property.iconData) : null,
-          title: Text(
-              (property.name ?? '') + ' [' + displayedDay.id.toString() + ']'),
+          title:
+              Text((property.name ?? '') + ' [' + property.id.toString() + ']'),
           trailing: DayButtons(displayedDay: displayedDay),
           subtitle: Text(displayedDay.value),
           onTap: () async {

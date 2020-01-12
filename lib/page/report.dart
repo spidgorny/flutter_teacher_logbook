@@ -8,17 +8,14 @@ import 'package:flutter_teacher_logbook/day/day_event.dart';
 import 'package:flutter_teacher_logbook/day/day_state.dart';
 import 'package:flutter_teacher_logbook/day/page.dart';
 import 'package:flutter_teacher_logbook/property/property_bloc.dart';
-import 'package:flutter_teacher_logbook/property/property_event.dart';
 import 'package:flutter_teacher_logbook/property/property_state.dart';
+import 'package:flutter_teacher_logbook/pupil/pupil_event.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 
 import '../class/class.dart';
-import '../class/class_bloc.dart';
-import '../class/class_event.dart';
 import '../common/date.dart';
 import '../pupil/pupil.dart';
 import '../pupil/pupil_bloc.dart';
-import '../pupil/pupil_event.dart';
 import '../pupil/pupil_state.dart';
 
 class Report extends StatelessWidget {
@@ -45,18 +42,30 @@ class Report extends StatelessWidget {
 
     return MultiBlocProvider(
         providers: [
-          BlocProvider<ClassBloc>(
-              create: (BuildContext context) => ClassBloc()..add(LoadClass())),
+          // already provided in class/page.dart
+//          BlocProvider<ClassBloc>(
+//              create: (BuildContext context) => ClassBloc()..add(LoadClass())),
           BlocProvider<PupilBloc>(
               create: (BuildContext context) =>
                   PupilBloc(this.klass)..add(LoadPupil())),
-          BlocProvider<PropertyBloc>(
-              create: (BuildContext context) =>
-                  PropertyBloc()..add(LoadProperty())),
+//          BlocProvider<PropertyBloc>(
+//              create: (BuildContext context) =>
+//                  PropertyBloc()..add(LoadProperty())),
         ],
         child: Scaffold(
             appBar: AppBar(
               title: Text('Report for ${klass.name} for ${month.Ym}'),
+              actions: <Widget>[
+                Builder(
+                  builder: (BuildContext context) => IconButton(
+                    icon: Icon(Icons.refresh),
+                    onPressed: () {
+                      PupilBloc pupilBloc = BlocProvider.of<PupilBloc>(context);
+                      pupilBloc.add(LoadPupil());
+                    },
+                  ),
+                )
+              ],
             ),
             body: BlocBuilder<PupilBloc, PupilState>(
                 builder: (BuildContext context, PupilState state) {
@@ -81,7 +90,12 @@ class Report extends StatelessWidget {
         isFixedHeader: true,
         headerWidgets: this._getHeader(),
         leftSideItemBuilder: _generateFirstColumnRow,
-        rightSideItemBuilder: _generateRightHandSideColumnRow,
+        rightSideItemBuilder: (BuildContext context, int index) =>
+            ReportPupilRow(
+          pupil: this.pupils[index],
+          columns: this.columns,
+          month: this.month,
+        ),
         itemCount: pupils.length,
         rowSeparatorWidget: const Divider(
           color: Colors.black54,
@@ -105,7 +119,7 @@ class Report extends StatelessWidget {
     return Container(
       child: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
       width: width,
-      height: 56,
+      height: this.height,
       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.centerLeft,
     );
@@ -114,18 +128,10 @@ class Report extends StatelessWidget {
   Widget _generateFirstColumnRow(BuildContext context, int index) {
     return Container(
       child: Text(pupils[index].name),
-      width: 100,
+      width: this.pupilWidth,
       height: this.height,
       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.centerLeft,
-    );
-  }
-
-  Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
-    return ReportPupilRow(
-      pupil: this.pupils[index],
-      columns: this.columns,
-      month: this.month,
     );
   }
 }
@@ -165,6 +171,9 @@ class ReportPupilRow extends StatelessWidget {
                   Date(this.month.Ym + '-' + i.toString().padLeft(2, '0'));
 //              print(day);
               var dayData = state.only(day);
+              if (day == Date('2010-01-02')) {
+                print(['dayData', dayData.length]);
+              }
               children.add(this.generateCell(day, dayData));
             }
             return Row(
@@ -184,14 +193,14 @@ class ReportPupilRow extends StatelessWidget {
           child: CircularProgressIndicator(),
         );
       } else if (state is PropertyLoaded) {
-        print(['properties', state.properties.length]);
+//        print(['properties', state.properties.length]);
         List<Widget> children = [];
         if (dayData.length > 0) {
           for (var day in dayData) {
             var property = state.findByID(day.property);
             if (property != null) {
               if (property.icon != null) {
-                children.add(Icon(property.iconData, size: 16));
+                children.add(Icon(property.iconData));
               } else {
                 children.add(Text(property.name ?? property.id.toString()));
               }
@@ -218,8 +227,8 @@ class ReportPupilRow extends StatelessWidget {
             alignment: Alignment.centerLeft,
           ),
           behavior: HitTestBehavior.translucent,
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            var res = await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => DayPage(this.pupil, day)));

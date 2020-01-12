@@ -10,15 +10,17 @@ import 'property_state.dart';
 class PropertyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (BuildContext context) => PropertyBloc()..add(LoadProperty()),
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Select Property'),
-          ),
-          body: PropertyList(),
-          floatingActionButton: PropertyFAB(),
-        ));
+    return
+//      BlocProvider(
+//        create: (BuildContext context) => PropertyBloc()..add(LoadProperty()),
+//        child:
+        Scaffold(
+      appBar: AppBar(
+        title: Text('Select Property'),
+      ),
+      body: PropertyList(),
+      floatingActionButton: PropertyFAB(),
+    );
   }
 }
 
