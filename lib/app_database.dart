@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_iconpicker/Serialization/iconDataSerialization.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
@@ -41,6 +45,10 @@ class AppDatabase {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     // Path with the form: /platform-specific-directory/demo.db
     final dbPath = join(appDocumentDir.path, 'demo.db');
+    if (DateTime.now().toIso8601String() == 'never') {
+      File removeMe = File(dbPath);
+      removeMe.deleteSync();
+    }
     return dbPath;
   }
 
@@ -51,16 +59,67 @@ class AppDatabase {
       // If the db does not exist, create some data
       if (oldVersion == 0) {
         var klass = intMapStoreFactory.store('class');
-        await klass.add(db, {'name': '8A'});
+        var id = await klass.add(db, {'name': '8A'});
+        print(['8A.id', id]);
 
-        var pupil = intMapStoreFactory.store('class');
-        await pupil.add(db, {'name': 'Victor'});
-        await pupil.add(db, {'name': 'Maria'});
-        await pupil.add(db, {'name': 'Nina'});
-        await pupil.add(db, {'name': 'Max'});
-        await pupil.add(db, {'name': 'Masha'});
+        var pupil = intMapStoreFactory.store('pupil');
+        await pupil.add(db, {'name': 'Victor', 'class': id});
+        await pupil.add(db, {'name': 'Maria', 'class': id});
+        await pupil.add(db, {'name': 'Nina', 'class': id});
+        await pupil.add(db, {'name': 'Max', 'class': id});
+        await pupil.add(db, {'name': 'Masha', 'class': id});
 
         var props = intMapStoreFactory.store('property');
+        await props.add(db, {
+          'name': 'Note 1',
+          'icon': jsonEncode(iconDataToMap(Icons.looks_one))
+        });
+        await props.add(db, {
+          'name': 'Note 2',
+          'icon': jsonEncode(iconDataToMap(Icons.looks_two))
+        });
+        await props.add(db, {
+          'name': 'Note 3',
+          'icon': jsonEncode(iconDataToMap(Icons.looks_3))
+        });
+        await props.add(db, {
+          'name': 'Note 4',
+          'icon': jsonEncode(iconDataToMap(Icons.looks_4))
+        });
+        await props.add(db, {
+          'name': 'Note 5',
+          'icon': jsonEncode(iconDataToMap(Icons.looks_5))
+        });
+        await props.add(db, {
+          'name': 'Good work',
+          'icon': jsonEncode(iconDataToMap(Icons.plus_one))
+        });
+        await props.add(db, {
+          'name': 'Eat during class',
+          'icon': jsonEncode(iconDataToMap(Icons.fastfood))
+        });
+        await props.add(db, {
+          'name': 'Misbehave',
+          'icon': jsonEncode(iconDataToMap(Icons.mood_bad))
+        });
+        await props.add(db,
+            {'name': 'Fight', 'icon': jsonEncode(iconDataToMap(Icons.people))});
+        await props.add(db, {
+          'name': 'Came in late',
+          'icon': jsonEncode(iconDataToMap(Icons.directions_walk))
+        });
+        await props.add(db, {
+          'name': 'Too loud',
+          'icon': jsonEncode(iconDataToMap(Icons.record_voice_over))
+        });
+        await props.add(db, {
+          'name': 'No homework',
+          'icon': jsonEncode(iconDataToMap(Icons.cancel))
+        });
+        await props.add(db, {
+          'name': 'Missing',
+          'icon': jsonEncode(iconDataToMap(Icons.location_disabled))
+        });
       }
     });
     // Any code awaiting the Completer's future will now start executing
