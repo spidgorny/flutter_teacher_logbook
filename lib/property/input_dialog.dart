@@ -68,10 +68,7 @@ class PickerForm extends StatefulWidget {
 }
 
 class _PickerFormState extends State<PickerForm> {
-  IconData _icon = IconData(Icons.add.codePoint,
-      fontFamily: Icons.add.fontFamily,
-      fontPackage: Icons.add.fontPackage,
-      matchTextDirection: Icons.add.matchTextDirection);
+  IconData _icon = Icons.add;
   TextEditingController textEditingController;
 
   @override
