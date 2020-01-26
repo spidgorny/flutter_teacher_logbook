@@ -4,17 +4,18 @@ import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_teacher_logbook/day/day_bloc.dart';
-import 'package:flutter_teacher_logbook/day/day_event.dart';
-import 'package:flutter_teacher_logbook/day/day_state.dart';
-import 'package:flutter_teacher_logbook/page/report_row.dart';
-import 'package:flutter_teacher_logbook/property/property_bloc.dart';
-import 'package:flutter_teacher_logbook/property/property_event.dart';
-import 'package:flutter_teacher_logbook/property/property_state.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 
 import '../class/class.dart';
 import '../common/date.dart';
+import '../day/day_bloc.dart';
+import '../day/day_event.dart';
+import '../day/day_state.dart';
+import '../page/report_row.dart';
+import '../property/property.dart';
+import '../property/property_bloc.dart';
+import '../property/property_event.dart';
+import '../property/property_state.dart';
 import '../pupil/pupil.dart';
 import '../pupil/pupil_bloc.dart';
 import '../pupil/pupil_event.dart';
@@ -150,36 +151,44 @@ class Report extends StatelessWidget {
   }
 
   Future<List<List<String>>> getReportTable(BuildContext context) async {
-    var header = ['Pupil'];
+    List<String> header = ['Pupil'];
     for (var i in this.columns) {
       header.add(i.toString());
     }
-    var yourListOfLists = [];
+    List<List<String>> yourListOfLists = [];
     yourListOfLists.add(header);
 
     PropertyBloc propertyBloc = BlocProvider.of<PropertyBloc>(context);
     propertyBloc.add(LoadProperty());
     PropertyLoaded properties = await propertyBloc
         .firstWhere((PropertyState state) => state is PropertyLoaded);
-    print(['properties', properties.properties]);
+//    print(['properties', properties.properties]);
 
     for (var pupil in pupils) {
-      var row = [pupil.name];
+      List<String> row = [pupil.name];
+
+//        DayBloc dayBloc = BlocProvider.of<DayBloc>(context);
+      DayBloc dayBloc = DayBloc(pupil);
+      dayBloc.add(LoadDay());
+      DayLoaded dayLoaded =
+          await dayBloc.firstWhere((DayState state) => state is DayLoaded);
+
       for (var i in this.columns) {
         var day = Date(this.month.Ym + '-' + i.toString().padLeft(2, '0'));
-        DayBloc dayBloc = BlocProvider.of<DayBloc>(context);
-        dayBloc.add(LoadDay());
-        DayLoaded dayLoaded =
-            await dayBloc.firstWhere((DayState state) => state is DayLoaded);
         var dayData = dayLoaded.only(day);
 
+        List<String> cell = [];
         for (var day in dayData) {
-          var property = properties.findByID(day.property);
-          print(['property', property]);
+          Property property = properties.findByID(day.property);
+//          print(['property', property]);
+          cell.add(property.name);
         }
+        row.add(cell.join("\n"));
       }
       yourListOfLists.add(row);
+      await dayBloc.close();
     }
+    await propertyBloc.close();
     return yourListOfLists;
   }
 }

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_teacher_logbook/common/date.dart';
-import 'package:flutter_teacher_logbook/day/day.dart';
-import 'package:flutter_teacher_logbook/day/day_bloc.dart';
-import 'package:flutter_teacher_logbook/day/day_event.dart';
-import 'package:flutter_teacher_logbook/day/day_state.dart';
-import 'package:flutter_teacher_logbook/day/page.dart';
-import 'package:flutter_teacher_logbook/property/property_bloc.dart';
-import 'package:flutter_teacher_logbook/property/property_state.dart';
+
+import '../common/date.dart';
+import '../day/day.dart';
+import '../day/day_bloc.dart';
+import '../day/day_event.dart';
+import '../day/day_state.dart';
+import '../day/page.dart';
+import '../property/property_bloc.dart';
+import '../property/property_state.dart';
 
 class ReportPupilRow extends StatelessWidget {
   final pupil;
