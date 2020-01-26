@@ -1,21 +1,23 @@
+import 'package:csv/csv.dart';
 import 'package:date_util/date_util.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../day/day.dart';
-import '../day/day_bloc.dart';
-import '../day/day_event.dart';
-import '../day/day_state.dart';
-import '../day/page.dart';
-import '../property/property_bloc.dart';
-import '../property/property_state.dart';
-import '../pupil/pupil_event.dart';
+import 'package:flutter_teacher_logbook/day/day_bloc.dart';
+import 'package:flutter_teacher_logbook/day/day_event.dart';
+import 'package:flutter_teacher_logbook/day/day_state.dart';
+import 'package:flutter_teacher_logbook/page/report_row.dart';
+import 'package:flutter_teacher_logbook/property/property_bloc.dart';
+import 'package:flutter_teacher_logbook/property/property_event.dart';
+import 'package:flutter_teacher_logbook/property/property_state.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 
 import '../class/class.dart';
 import '../common/date.dart';
 import '../pupil/pupil.dart';
 import '../pupil/pupil_bloc.dart';
+import '../pupil/pupil_event.dart';
 import '../pupil/pupil_state.dart';
 
 class Report extends StatelessWidget {
@@ -56,15 +58,27 @@ class Report extends StatelessWidget {
             appBar: AppBar(
               title: Text('Report for ${klass.name} for ${month.Ym}'),
               actions: <Widget>[
-                Builder(
-                  builder: (BuildContext context) => IconButton(
-                    icon: Icon(Icons.refresh),
-                    onPressed: () {
-                      PupilBloc pupilBloc = BlocProvider.of<PupilBloc>(context);
-                      pupilBloc.add(LoadPupil());
-                    },
-                  ),
-                )
+//                IconButton(
+//                  icon: Icon(Icons.refresh),
+//                  onPressed: () {
+//                    PupilBloc pupilBloc = BlocProvider.of<PupilBloc>(context);
+//                    pupilBloc.add(LoadPupil());
+//                  },
+//                ),
+                IconButton(
+                  icon: Icon(Icons.share),
+                  onPressed: () async {
+                    var yourListOfLists = await this.getReportTable(context);
+                    String csv =
+                        const ListToCsvConverter().convert(yourListOfLists);
+                    await Share.file(
+                        'TeacherLogbook',
+                        'TeacherLogbook-' + this.month.Ym + '.csv',
+                        csv.codeUnits,
+                        'text/csv',
+                        text: 'Pupil Report for ' + this.month.Ym);
+                  },
+                ),
               ],
             ),
             body: BlocBuilder<PupilBloc, PupilState>(
@@ -134,109 +148,38 @@ class Report extends StatelessWidget {
       alignment: Alignment.centerLeft,
     );
   }
-}
 
-class ReportPupilRow extends StatelessWidget {
-  final pupil;
-  final double cellWidth = 100;
-  final double cellHeight = 52;
-  final List<int> columns;
-  final Date month;
+  Future<List<List<String>>> getReportTable(BuildContext context) async {
+    var header = ['Pupil'];
+    for (var i in this.columns) {
+      header.add(i.toString());
+    }
+    var yourListOfLists = [];
+    yourListOfLists.add(header);
 
-  const ReportPupilRow(
-      {Key key,
-      @required this.pupil,
-      @required this.columns,
-      @required this.month})
-      : super(key: key);
+    PropertyBloc propertyBloc = BlocProvider.of<PropertyBloc>(context);
+    propertyBloc.add(LoadProperty());
+    PropertyLoaded properties = await propertyBloc
+        .firstWhere((PropertyState state) => state is PropertyLoaded);
+    print(['properties', properties.properties]);
 
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<DayBloc>(
-              create: (BuildContext context) =>
-                  DayBloc(this.pupil)..add(LoadDay())),
-        ],
-        child: BlocBuilder<DayBloc, DayState>(
-            builder: (BuildContext context, DayState state) {
-          if (state is DayLoading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is DayLoaded) {
-            List<Widget> children = [];
-            for (var i in this.columns) {
-              var day =
-                  Date(this.month.Ym + '-' + i.toString().padLeft(2, '0'));
-//              print(day);
-              var dayData = state.only(day);
-              if (day == Date('2010-01-02')) {
-                print(['dayData', dayData.length]);
-              }
-              children.add(this.generateCell(day, dayData));
-            }
-            return Row(
-              children: children,
-            );
-          } else {
-            return Center(child: Text(state.toString()));
-          }
-        }));
-  }
+    for (var pupil in pupils) {
+      var row = [pupil.name];
+      for (var i in this.columns) {
+        var day = Date(this.month.Ym + '-' + i.toString().padLeft(2, '0'));
+        DayBloc dayBloc = BlocProvider.of<DayBloc>(context);
+        dayBloc.add(LoadDay());
+        DayLoaded dayLoaded =
+            await dayBloc.firstWhere((DayState state) => state is DayLoaded);
+        var dayData = dayLoaded.only(day);
 
-  Widget generateCell(Date day, List<Day> dayData) {
-    return BlocBuilder<PropertyBloc, PropertyState>(
-        builder: (BuildContext context, PropertyState state) {
-      if (state is PropertyLoading) {
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      } else if (state is PropertyLoaded) {
-//        print(['properties', state.properties.length]);
-        List<Widget> children = [];
-        if (dayData.length > 0) {
-          for (var day in dayData) {
-            var property = state.findByID(day.property);
-            if (property != null) {
-              if (property.icon != null) {
-                children.add(Icon(property.iconData));
-              } else {
-                children.add(Text(property.name ?? property.id.toString()));
-              }
-            } else {
-              children.add(Text('?'));
-            }
-          }
-        } else {
-          // clickable placeholder
-          children.add(Container(
-            width: this.cellWidth,
-            height: cellHeight,
-          ));
+        for (var day in dayData) {
+          var property = properties.findByID(day.property);
+          print(['property', property]);
         }
-
-        return GestureDetector(
-          child: Container(
-            child: Row(
-              children: children,
-            ),
-            width: this.cellWidth,
-            height: this.cellHeight,
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-            alignment: Alignment.centerLeft,
-          ),
-          behavior: HitTestBehavior.translucent,
-          onTap: () async {
-            var res = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DayPage(this.pupil, day)));
-          },
-        );
-      } else {
-        return Center(child: Text(state.toString()));
       }
-    });
+      yourListOfLists.add(row);
+    }
+    return yourListOfLists;
   }
 }
