@@ -34,6 +34,12 @@ class InputDialog {
           ),
           actions: <Widget>[
             FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
               child: Text('Ok'),
               onPressed: () {
                 Navigator.of(context).pop(teamName);

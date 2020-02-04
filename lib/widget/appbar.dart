@@ -4,7 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' as pp;
+import 'package:platform/platform.dart';
 
 import '../app_database.dart';
 
@@ -45,28 +46,38 @@ class _MyAppBarState extends State<MyAppBar> {
         IconButton(
           icon: Icon(Icons.control_point_duplicate),
           onPressed: () async {
-            print('[Backup]');
-            var dbPath = await AppDatabase.instance.dbPath;
-            print(dbPath);
-            File file = File(dbPath);
-
-            final extDir = await getExternalStorageDirectory();
-            final ymd = DateTime.now().toIso8601String().replaceAll(':', '-');
-            final extPath = join(extDir.path, 'teacher-logbook.' + ymd + '.db');
-            print(extPath);
-            file.copy(extPath);
-
-            Fluttertoast.showToast(
-                msg: "Backup is copied to " + extPath,
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIos: 15,
-                backgroundColor: Colors.green,
-                textColor: Colors.white,
-                fontSize: 16.0);
+            await makeBackup();
           },
         ),
       ],
     );
+  }
+
+  Future makeBackup() async {
+    print('[Backup]');
+    var dbPath = await AppDatabase.instance.dbPath;
+    print(dbPath);
+    File file = File(dbPath);
+
+    Directory extDir;
+    Platform _platform = const LocalPlatform();
+    if (_platform.isIOS) {
+      extDir = await pp.getApplicationDocumentsDirectory();
+    } else {
+      extDir = await pp.getExternalStorageDirectory();
+    }
+    final ymd = DateTime.now().toIso8601String().replaceAll(':', '-');
+    final extPath = join(extDir.path, 'teacher-logbook.' + ymd + '.db');
+    print(extPath);
+    file.copy(extPath);
+
+    Fluttertoast.showToast(
+        msg: "Backup is copied to " + extPath,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 15,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 }
