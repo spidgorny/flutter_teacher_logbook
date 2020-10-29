@@ -35,6 +35,8 @@ dependencies:
   esys_flutter_share: ^1.0.2
   csv: ^4.0.3
   sembast_web: '>=1.0.0'
+  yaml: ^2.2.1
+  duration: ^2.0.15
 
 dev_dependencies:
   flutter_test:

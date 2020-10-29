@@ -1,0 +1,7 @@
+---
+- 2020-10-29:
+  - 1h: upgrade flutter
+  - 1h: try deploy to web
+  - 30m: parse time.yaml
+- 2020-10-30:
+    - 15m: something else
