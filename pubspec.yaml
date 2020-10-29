@@ -37,6 +37,7 @@ dependencies:
   sembast_web: '>=1.0.0'
   yaml: ^2.2.1
   duration: ^2.0.15
+  date_calendar: 0.2.1
 
 dev_dependencies:
   flutter_test:
