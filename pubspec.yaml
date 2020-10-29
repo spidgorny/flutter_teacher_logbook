@@ -34,6 +34,7 @@ dependencies:
   date_util: ^0.1.4
   esys_flutter_share: ^1.0.2
   csv: ^4.0.3
+  sembast_web: '>=1.0.0'
 
 dev_dependencies:
   flutter_test:

@@ -63,8 +63,11 @@ class _MyAppBarState extends State<MyAppBar> {
     Platform _platform = const LocalPlatform();
     if (_platform.isIOS) {
       extDir = await pp.getApplicationDocumentsDirectory();
-    } else {
+    } else if (_platform.isAndroid) {
       extDir = await pp.getExternalStorageDirectory();
+    } else {
+      // web
+      return;
     }
     final ymd = DateTime.now().toIso8601String().replaceAll(':', '-');
     final extPath = join(extDir.path, 'teacher-logbook.' + ymd + '.db');
